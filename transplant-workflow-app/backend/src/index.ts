@@ -25,6 +25,13 @@ import preservationRoutes from './routes/preservation';
 import analyticsRoutes from './routes/analytics';
 import adminRoutes from './routes/admin';
 import donorSummaryRoutes from './routes/donorSummary';
+import riskPredictionRoutes from './routes/riskPrediction';
+import reportGenerationRoutes from './routes/reportGeneration';
+import notificationsRoutes from './routes/notifications';
+
+// Import Phase 2 services
+import { startWorkflowAutomation } from './services/workflowAutomationService';
+import { NotificationService } from './services/notificationService';
 
 dotenv.config();
 
@@ -99,6 +106,10 @@ app.use('/api/preservation', preservationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/donor-summary', donorSummaryRoutes);
+// Phase 2 routes
+app.use('/api/risk-prediction', riskPredictionRoutes);
+app.use('/api/report-generation', reportGenerationRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
@@ -127,6 +138,11 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   logger.info(`🚀 Server running on port ${PORT}`);
   logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+
+  // Start Phase 2 services
+  startWorkflowAutomation();
+  NotificationService.scheduleRecurringNotifications();
+  logger.info('✨ Phase 2 features initialized');
 });
 
 // Graceful shutdown

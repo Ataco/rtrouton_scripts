@@ -158,3 +158,33 @@ export const rolesAPI = {
   update: (id: string, data: any) => api.patch(`/roles/${id}`, data),
   delete: (id: string) => api.delete(`/roles/${id}`),
 }
+
+// Phase 2: Risk Prediction API
+export const riskPredictionAPI = {
+  predictSuccess: (organMatchId: string) =>
+    api.get(`/risk-prediction/organ-match/${organMatchId}`),
+  recommendPreservation: (data: any) =>
+    api.post('/risk-prediction/recommend-preservation', data),
+  batchPredict: (organMatchIds: string[]) =>
+    api.post('/risk-prediction/batch-predict', { organMatchIds }),
+}
+
+// Phase 2: Report Generation API
+export const reportGenerationAPI = {
+  generateCaseReport: (donorCaseId: string) =>
+    api.get(`/report-generation/case/${donorCaseId}`),
+  generateOrganReport: (organMatchId: string) =>
+    api.get(`/report-generation/organ/${organMatchId}`),
+  generateDailySummary: (date?: string) =>
+    api.get('/report-generation/daily-summary', { params: { date } }),
+  generateAnalyticsReport: (params?: any) =>
+    api.get('/report-generation/analytics-report', { params }),
+}
+
+// Phase 2: Notifications API
+export const notificationsAPI = {
+  send: (data: any) => api.post('/notifications/send', data),
+  sendBatch: (notifications: any[]) =>
+    api.post('/notifications/send-batch', { notifications }),
+  getMyNotifications: () => api.get('/notifications/my-notifications'),
+}
