@@ -130,23 +130,32 @@ This application provides end-to-end workflow management for transplant coordina
 - PostgreSQL 14+
 - Auth0 account (for authentication)
 
-### Backend Setup
+### Setup Guides
 
-1. Navigate to backend directory:
-```bash
-cd backend
-```
+**Choose your platform**:
+- **Windows 11**: See [SETUP_GUIDE_WINDOWS.md](./SETUP_GUIDE_WINDOWS.md) - Complete Windows-specific instructions
+- **macOS/Linux**: See [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Unix-based systems
 
-2. Install dependencies:
-```bash
-npm install
-```
+Both guides include:
+- Step-by-step installation
+- Database configuration
+- Auth0 setup
+- Troubleshooting tips
+- Platform-specific commands
 
-3. Create `.env` file from example:
-```bash
-cp .env.example .env
-```
+### Quick Start
 
+**Detailed setup instructions are in the platform-specific guides:**
+- [Windows 11 Setup Guide](./SETUP_GUIDE_WINDOWS.md)
+- [macOS/Linux Setup Guide](./SETUP_GUIDE.md)
+
+**Quick Overview**:
+
+#### Backend Setup
+
+1. Navigate to backend directory
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env`
 4. Configure environment variables:
 ```env
 # Database
