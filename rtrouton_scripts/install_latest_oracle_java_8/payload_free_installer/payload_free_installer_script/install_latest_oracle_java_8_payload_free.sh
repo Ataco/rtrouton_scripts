@@ -2,8 +2,15 @@
 
 # This script downloads and installs the latest Oracle Java 8 for compatible Macs
 
-# Determine OS version
-osvers=$(sw_vers -productVersion | awk -F. '{print $2}')
+# Save current IFS state
+
+OLDIFS=$IFS
+
+IFS='.' read osvers_major osvers_minor osvers_dot_version <<< "$(/usr/bin/sw_vers -productVersion)"
+
+# restore IFS to previous state
+
+IFS=$OLDIFS
 
 # Specify the "OracleUpdateXML" variable by adding the "SUFeedURL" value included in the
 # /Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Info.plist file. 
@@ -33,11 +40,11 @@ fileURL=`/usr/bin/curl --silent $OracleUpdateXML | awk -F \" /enclosure/'{print 
 
 java_eight_dmg="$3/tmp/java_eight.dmg"
 
-if [[ ${osvers} -lt 7 ]]; then
+if [[ ( ${osvers_major} -eq 10 && ${osvers_minor} -lt 7 ) ]]; then
   echo "Oracle Java 8 is not available for Mac OS X 10.6.8 or earlier."
 fi
 
-if [[ ${osvers} -ge 7 ]]; then
+if [[ ( ${osvers_major} -eq 10 && ${osvers_minor} -ge 7 ) ]]; then
  
     # Download the latest Oracle Java 8 software disk image
     # The curl -L option is needed because there is a redirect 
@@ -58,10 +65,13 @@ if [[ ${osvers} -ge 7 ]]; then
     # may be an installer package available at the root of the mounted disk
     # image.
 
-    if [[ -e "$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*\.app \))/Contents/Resources/*Java*.pkg" ]]; then    
-      pkg_path="$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*\.app \))/Contents/Resources/*Java*.pkg"
-    elif [[ -e "$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*Java*\.pkg -o -iname \*Java*\.mpkg \))" ]]; then    
+    if [[ -e "$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*Java*\.pkg -o -iname \*Java*\.mpkg \))" ]]; then    
       pkg_path="$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*Java*\.pkg -o -iname \*Java*\.mpkg \))"
+    elif [[ -e "$(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*\.app \))" ]]; then
+         oracle_app=`(/usr/bin/find $TMPMOUNT -maxdepth 1 \( -iname \*\.app \))`
+        if [[ -e "$(/usr/bin/find "$oracle_app"/Contents/Resources -maxdepth 1 \( -iname \*Java*\.pkg -o -iname \*Java*\.mpkg \))" ]]; then
+          pkg_path="$(/usr/bin/find "$oracle_app"/Contents/Resources -maxdepth 1 \( -iname \*Java*\.pkg -o -iname \*Java*\.mpkg \))"
+        fi
     fi
          
     # Before installation, the installer's developer certificate is checked to
